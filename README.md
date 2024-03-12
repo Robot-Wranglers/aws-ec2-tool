@@ -61,10 +61,24 @@ Usage info follows:
 ```bash
 $ hop --help
 
-Usage: hop [OPTIONS] COMMAND [ARGS]...
+Usage: hop [OPTIONS] IDENTIFIER [COMMAND]...
 
-  ...placeholder..
+  Tool for SSH'ing in to EC2 with SSM-backed keys.
+
+  Example usage:
+
+      hop <instance_id>     hop <reservation_id>     hop <instance_name>
+      hop <ip_address>
+
+Options:
+  -s, --ssm-prefix TEXT  default SSM prefix to use for key-search
+  -l, --list-only        list instances
+  --profile TEXT         AWS profile to use
+  -s, --script TEXT      Script to run
+  --user TEXT            username (default will attempt auto-detect)
+  --help                 Show this message and exit.
 ```
+
 
 ---------------------------------------------------------------------------------
 

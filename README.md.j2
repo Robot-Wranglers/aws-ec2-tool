@@ -26,9 +26,7 @@
 
 ## Overview
 
-(Placeholder)
-
-See [setup.cfg](setup.cfg) to find the latest info about required versions of boto.
+See [setup.cfg](setup.cfg) to find the latest info about dependency versions.  Larger project dependencies here include [boto](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) and [rich](https://github.com/Textualize/rich).  If that conflicts with your setup you might want to look at [using docker](#using-docker)
 
 See the [Usage section](#usage) for more details
 
@@ -39,24 +37,24 @@ See the [Usage section](#usage) for more details
 See [pypi](https://pypi.org/project/aws-ec2-tool/) for available releases.
 
 ```bash
-pip install aws-ec2-tool
+$ pip install aws-ec2-tool
 ```
 
 ---------------------------------------------------------------------------------
 
-## Usage
+## CLI Usage
 
 After installation, you can invoke this tool as either `hop` or `python -m hop`.
 
 Usage info follows:
 
+{%- for entrypoint_metadata in python_cli.console_script_entrypoints %}
+{% if entrypoint_metadata.bin_name == 'hop' %}
 ```bash
-$ hop --help
-
-Usage: hop [OPTIONS] COMMAND [ARGS]...
-
-  ...placeholder..
+{{entrypoint_metadata.help_output}}
 ```
+{%endif%}
+{%endfor%}
 
 ---------------------------------------------------------------------------------
 
