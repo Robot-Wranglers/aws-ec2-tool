@@ -4,6 +4,7 @@ Core abstraction for environment-aware boto, which
 reduces a lot of boilerplate with boto sessions/profiles
 """
 
+import botocore
 from ssm.api.environment import Environment as BaseEnvironment
 
 from hop import util
@@ -30,9 +31,7 @@ class Environment(BaseEnvironment):
         )
 
     def get_ami(self, ami_id, strict=True):
-        import botocore
-
-        LOGGER.debug(f"looking up ami {ami_id}")
+        LOGGER.warning(f"looking up ami: {ami_id}")
         try:
             response = self.ec2.describe_images(ImageIds=[ami_id])
         except botocore.exceptions.ClientError:
@@ -91,7 +90,8 @@ class Environment(BaseEnvironment):
             msg = "could not guess unix user for ami `{}`, using default `{}` "
             LOGGER.warning(msg.format(ami_id, result))
         else:
-            LOGGER.debug(f"guessing user: {result}")
+            pass
+            # LOGGER.debug(f"guessing user: {result}")
         return result
 
     def get_ec2_metadata_base(self, filters=[], running=True):

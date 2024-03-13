@@ -2,7 +2,6 @@
 """
 
 import shil
-from ssm import util as ssm_util
 
 from hop import util
 
@@ -27,7 +26,7 @@ def _get_handle(**kwargs):
     profile = kwargs.pop("profile", None)
     env = (
         Environment.from_profile(profile)
-        if ssm_util.is_string(profile)
+        if isinstance(profile, (str,))
         else kwargs.pop("env", None)
     )
     assert env
@@ -38,13 +37,13 @@ def _get_handle(**kwargs):
 def resolve_user(user=None, env=None, instance=None):
     """ """
     if user:
-        env.logger.debug(f"user override was passed in: {user}")
+        # env.logger.debug(f"user override was passed in: {user}")
         return user
     if instance:
         instance_tags = util.tags_list_to_dict(instance.get("Tags", []))
         if instance_tags and "User" in instance_tags:
             user = instance_tags["User"]
-            env.logger.debug(f"hint for `User` found in instance tags: {user}")
+            # env.logger.debug(f"hint for `User` found in instance tags: {user}")
             return user
     return env.get_user_from_ami(instance["ImageId"])
 
@@ -111,7 +110,7 @@ def hop(
 
 def hop_partial(aslib, **kwargs):
     """ """
-    LOGGER.debug(f"hop_partial: {locals()}")
+    # LOGGER.debug(f"hop_partial: {locals()}")
     for secret_meta in find_secrets(aslib=aslib, **kwargs):
         # raise Exception(secret)
         context = kwargs.copy()
@@ -126,9 +125,9 @@ def hop_partial(aslib, **kwargs):
         if connection_succeeded and output:
             return output
         elif connection_succeeded:
-            return LOGGER.debug("Exiting after successful connection")
+            return LOGGER.info("Exiting after successful connection")
         else:
-            LOGGER.debug("Connection failed, trying next option")
+            LOGGER.warning("Connection failed, trying next option")
     if aslib:
         msg = "failed"
         return msg
@@ -148,19 +147,19 @@ def find_secrets(
     **kwargs,
 ):
     """ """
-    LOGGER.debug(f"find_secrets: {locals()}")
+    # LOGGER.debug(f"find_secrets: {locals()}")
     if env:
-        LOGGER.debug(
-            (
-                "environment hint `{}` was passed, cascading environment-search "
-                "will be short-circuited"
-            ).format(env)
-        )
+        # LOGGER.debug(
+        #     (
+        #         "environment hint `{}` was passed, cascading environment-search "
+        #         "will be short-circuited"
+        #     ).format(env)
+        # )
         envs = [Environment.from_name(env)] if isinstance(env, str) else [env]
     else:
         global DEFAULT_ENV_SEARCH_ORDER
         msg = "default environment search order: {}"
-        LOGGER.debug(msg.format(DEFAULT_ENV_SEARCH_ORDER))
+        # LOGGER.debug(msg.format(DEFAULT_ENV_SEARCH_ORDER))
         this_search_order = DEFAULT_ENV_SEARCH_ORDER
         # this_search_order = (
         #     list(
@@ -190,7 +189,7 @@ def find_secrets(
         this_search_order = [x for x in this_search_order if x not in missing]
         envs = [Environment.from_name(x) for x in this_search_order]
     if instance_id and not dns:
-        LOGGER.debug(f"searching for environment with instance {instance_id}")
+        # LOGGER.debug(f"searching for environment with instance {instance_id}")
         for env in envs:
             ec2_metadata = env.get_ec2_metadata_from_id(instance_id)
             if ec2_metadata:
@@ -211,14 +210,14 @@ def find_secrets(
     #         LOGGER.debug("exact match for dns, path is: {}".format(secret.secret_path))
     #         yield secret
 
-    LOGGER.debug(f"2nd pass: searching through environments: {envs}")
-    LOGGER.debug(f"env search order is: {[env.name for env in envs]}")
+    LOGGER.warning(f"2nd pass: searching through environments: {envs}")
+    # LOGGER.debug(f"env search order is: {[env.name for env in envs]}")
     AMIs = {}
     match = None
     for env in envs:
         if match:
             break
-        env.logger.debug("getting reservations")
+        # env.logger.debug("getting reservations")
         reservations = env.ec2.describe_instances()["Reservations"]
         dnscount = 0
         options = []
@@ -292,7 +291,7 @@ def find_secrets(
         else:
             return give_up()
     else:
-        LOGGER.debug(f"found match: {instance}")
+        # LOGGER.debug(f"found match: {instance}")
         keyname = instance["KeyName"]
         ssh_user = resolve_user(user=user, env=env, instance=instance)
         common = dict(
@@ -337,7 +336,7 @@ def hop_connect(
         secret_path=secret_path,
     )
     if aslib:
-        LOGGER.debug(command)
+        LOGGER.critical(command)
         result = util.invoke(cmd)
         string_stdout = result.stdout
         return string_stdout

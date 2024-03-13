@@ -16,9 +16,14 @@ Example usage:
 ```bash
 $ python -mhop --help
 
-Usage: python -m hop [OPTIONS] [COMMAND]... ANY_ID
+Usage: python -m hop [OPTIONS] IDENTIFIER [COMMAND]...
 
-  Tool for SSH'ing in to EC2 with SSM-backed keys
+  Tool for SSH'ing in to EC2 with SSM-backed keys.
+
+  Example usage:
+
+      hop <instance_id>     hop <reservation_id>     hop <instance_name>
+      hop <ip_address>
 
 Options:
   -s, --ssm-prefix TEXT  default SSM prefix to use for key-search

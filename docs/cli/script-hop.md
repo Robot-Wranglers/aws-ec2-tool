@@ -21,9 +21,14 @@ Module [*hop.bin.hop.entry*](/src/hop/bin/hop.py) publishes a CLI named `hop` vi
 ```bash
 $ hop --help
 
-Usage: hop [OPTIONS] [COMMAND]... ANY_ID
+Usage: hop [OPTIONS] IDENTIFIER [COMMAND]...
 
-  Tool for SSH'ing in to EC2 with SSM-backed keys
+  Tool for SSH'ing in to EC2 with SSM-backed keys.
+
+  Example usage:
+
+      hop <instance_id>     hop <reservation_id>     hop <instance_name>
+      hop <ip_address>
 
 Options:
   -s, --ssm-prefix TEXT  default SSM prefix to use for key-search
